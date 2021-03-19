@@ -1,0 +1,25 @@
+---
+version: "3.8"
+services: 
+  mysql: 
+    container_name: some-mysql2
+    environment: 
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+    image: mysql
+    ports: 
+      - "3311:3306"
+    volumes: 
+      - "mysql_volume:/var/lib/mysql"
+  test: 
+    build: 
+      context: "."
+      dockerfile: dockerFile
+    container_name: test-container
+    depends_on: 
+      - mysql
+    env_file: 
+      - .env
+    ports: 
+      - "8080:8080"
+volumes: 
+  mysql_volume:

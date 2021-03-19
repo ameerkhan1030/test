@@ -1,0 +1,5 @@
+FROM openjdk:8-jre-alpine
+WORKDIR /tmp
+COPY ./target/test.jar /tmp/test.jar
+EXPOSE 8080
+CMD [ "java", "-jar", "test.jar" ]
