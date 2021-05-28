@@ -1,0 +1,56 @@
+--- 
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: java-user
+  labels:
+    app: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+      - name: java-user
+        image: ameerkhan1030/java_1030:latest
+        imagePullPolicy: Always
+        env:
+        - name : DB
+          value: testdb
+        - name : DB_USER
+          value: root
+        - name : DB_PWD
+          value: pass
+        - name : DB_HOST
+          value: some-mysql 
+        ports:
+        - containerPort: 8080
+          name: http
+        livenessProbe: 
+          httpGet: 
+            path: /user
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: java-user
+spec: 
+  ports: 
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector: 
+    app: test
+  type: LoadBalancer
+
+    
+
+
