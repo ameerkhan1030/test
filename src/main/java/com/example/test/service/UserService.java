@@ -18,6 +18,9 @@ public class UserService {
 	@Transactional
 	public void addUser(final User user) {
 
+		if (user.getName() == null || user.getName().trim().length() == 0) {
+			return;
+		}
 		userRepo.save(user);
 	}
 
