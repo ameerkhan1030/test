@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="CONSOLE_ROOT"
+		class="ch.qos.logback.core.ConsoleAppender">
+
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="CONSOLE_INFO"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}:%p:%X{applicationCode}:%C:%M:%X{uuid}:%m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="CONSOLE_NON_INFO"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>DENY</onMatch>
+			<onMismatch>ACCEPT</onMismatch>
+		</filter>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}:%p:%X{applicationCode}:%C:%M:%X{uuid}:%m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="STASH_INFO"
+		class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+		<destination>logstash:5044</destination>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+			<customFields> {
+				"appname": "service-user",
+				"appversion": "1.0"
+				}
+			</customFields>
+			<providers>
+				<context /> <!--Outputs entries from logback's context -->
+				<version /> <!-- Logstash json format version, the @version field in the output -->
+				<loggerName />
+				<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}:%p:%X{applicationCode}:%C:%M:%X{uuid}:%m%n</pattern>
+				<threadName />
+				<message />
+				<logstashMarkers /> <!-- Useful so we can add extra information for specific log lines as Markers -->
+				<arguments /> <!--or through StructuredArguments -->
+
+				<stackTrace />
+			</providers>
+		</encoder>
+	</appender>
+
+	<appender name="STASH_NON_INFO"
+		class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+		<destination>logstash:5044</destination>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>DENY</onMatch>
+			<onMismatch>ACCEPT</onMismatch>
+		</filter>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+			<customFields> {
+				"appname": "service-user",
+				"appversion": "1.0"
+				}
+			</customFields>
+			<providers>
+				<context /> <!--Outputs entries from logback's context -->
+				<version /> <!-- Logstash json format version, the @version field in the output -->
+				<loggerName />
+				<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}:%p:%X{applicationCode}:%C:%M:%m%n</pattern>
+				<threadName />
+				<message />
+				<logstashMarkers /> <!-- Useful so we can add extra information for specific log lines as Markers -->
+				<arguments /> <!--or through StructuredArguments -->
+
+				<stackTrace />
+			</providers>
+		</encoder>
+	</appender>
+
+    
+    <!-- LOG everything at INFO level -->
+    <root level="info">
+        <appender-ref ref="CONSOLE_ROOT" />
+    </root>
+
+    <!-- LOG "com.baeldung*" at TRACE level -->
+    <logger name="com.example" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE_INFO" />
+        <appender-ref ref="CONSOLE_NON_INFO" />
+        <appender-ref ref="STASH_INFO" />
+        <appender-ref ref="STASH_NON_INFO" />
+    </logger>
+
+</configuration>

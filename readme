@@ -1,0 +1,34 @@
+Write Test  Files for which we need to cover
+
+mvn  clean install to install jar and run test goal
+
+In target folder , you will find jacoco.exec file and site folder
+
+jacoco.exec -> we use this to import code coverage to sonarcube
+ Site folder contains html and csv format code coverage report
+
+To import code coverage to sonarcube
+
+mvn sonar:sonar -Dsonar.projectKey=service_user -Dsonar.host.url=http://localhosr:9000 -Dsonar.login=admin -Dsonar.password=pwd 
+
+
+
+For Runtime
+
+Run jar with jacocoagent.jar to instrument the code in run time to listen the events
+
+java -DDB=testdb -DDB_HOST=localhost -DDB_PWD=ameex -DDB_USER=root -javaagent:jacocoagent.jar=address=*,port=36320,destfile=jacoco-it.exec,output=tcpserver -jar target/test.jar 
+
+Use below cmd to generate executable file using jacococli.jar
+
+java -jar jacococli.jar dump --address localhost --port 36320 --destfile target/jacoco-it.exec
+
+Generate report file in target directory
+
+java -jar jacococli.jar report target/jacoco-it.exec --classfiles target/classes/com --sourcefiles src/main/java/ --html target/jacoco-report --csv target/jacoco-report/index.csv
+
+Above cmd will generate a report in the jacoco-report folder in the target directory. And generate executable file in target directory . we can use this executable file to import code coverage in sonarcube.
+
+
+
+
